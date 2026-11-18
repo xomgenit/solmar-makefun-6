@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>SOLMAR — Streets of the Sun</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<!-- HUD -->
+<div id="hud" style="display:none">
+  <div id="hud-topleft">
+    <div id="health-bar"><div id="health-fill"></div><span id="health-text">100</span></div>
+    <div id="cash">$0</div>
+    <div id="stars">☆☆☆☆☆</div>
+  </div>
+  <div id="hud-topright">
+    <div id="zone">SOLMAR BAY</div>
+    <canvas id="minimap" width="150" height="150"></canvas>
+  </div>
+  <div id="objective-panel">
+    <div id="objective-title">FREE ROAM</div>
+    <div id="objective-text"></div>
+  </div>
+  <div id="speedometer" style="display:none">
+    <div id="speed">0 km/h</div>
+    <div id="car-health"><div id="car-health-fill"></div></div>
+  </div>
+  <div id="hint" style="display:none"></div>
+  <div id="banner" style="display:none">
+    <div id="banner-title"></div>
+    <div id="banner-sub"></div>
+  </div>
+</div>
+
+<!-- Title screen -->
+<div id="title-screen" class="overlay" style="display:none">
+  <div class="panel title-panel">
+    <h1 class="game-title">SOLMAR</h1>
+    <div class="game-subtitle">STREETS OF THE SUN</div>
+    <p class="tagline">Danny "Dice" Marlow is back in Solmar Bay. The Harbor Kings run the docks,
+      Vera Santos has work, and the SBPD is watching. Take the city — one job at a time.</p>
+    <div class="menu-buttons">
+      <button id="btn-new">NEW GAME</button>
+      <button id="btn-continue">CONTINUE</button>
+      <button id="btn-howto">HOW TO PLAY</button>
+    </div>
+    <div id="howto" style="display:none">
+      <p><b>WASD / arrows</b> — move / drive &nbsp;·&nbsp; <b>Shift</b> — sprint &nbsp;·&nbsp;
+      <b>Mouse</b> — aim, <b>click</b> — shoot &nbsp;·&nbsp; <b>E</b> — steal / exit car, use services</p>
+      <p><b>Space</b> — handbrake &nbsp;·&nbsp; <b>H</b> — horn &nbsp;·&nbsp; <b>Esc</b> — pause</p>
+      <p>Sunset Auto Spa respray ($150) clears your wanted level. Solmar General patches you up ($100).
+      Stay out of sight and the heat cools off.</p>
+    </div>
+    <p class="credit">An original game. No affiliation with any commercial game or publisher.</p>
+  </div>
+</div>
+
+<!-- Pause menu -->
+<div id="pause-menu" class="overlay" style="display:none">
+  <div class="panel">
+    <h2>PAUSED</h2>
+    <p id="pause-stats"></p>
+    <div class="menu-buttons">
+      <button id="btn-resume">RESUME</button>
+      <button id="btn-save">SAVE GAME</button>
+      <button id="btn-restart-mission">RESTART MISSION</button>
+      <button id="btn-quit">QUIT TO TITLE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Wasted -->
+<div id="wasted-screen" class="overlay wasted" style="display:none">
+  <div class="panel">
+    <h2 class="big-red">WASTED</h2>
+    <p id="wasted-fine"></p>
+    <p>Solmar General patched you up. Your car is gone; your reputation isn't.</p>
+    <div class="menu-buttons">
+      <button id="btn-respawn-wasted">BACK TO THE STREETS</button>
+    </div>
+  </div>
+</div>
+
+<!-- Busted -->
+<div id="busted-screen" class="overlay busted" style="display:none">
+  <div class="panel">
+    <h2 class="big-blue">BUSTED</h2>
+    <p id="busted-fine"></p>
+    <p>The SBPD let you walk — this time. Vera is not impressed.</p>
+    <div class="menu-buttons">
+      <button id="btn-respawn-busted">BACK TO THE STREETS</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
