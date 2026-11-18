@@ -4,7 +4,7 @@
 // the player is seen (except 3s after fresh heat).
 import { dist, clamp, angleDiff } from './util.js';
 import { WORLD, nearestRoadPoint, collideCircle } from './city.js';
-import { spawnEnemy, shoot } from './combat.js';
+import { spawnEnemy, shoot, hasLineOfSight } from './combat.js';
 import { createCar, driveCar, MODELS } from './vehicles.js';
 
 const SEE_FOOT = 780;
@@ -149,9 +149,11 @@ export function createPolice(game) {
           cop.x = col2.x; cop.y = col2.y;
         } else { cop.x = col.x; cop.y = col.y; }
       }
-      // Shoot when close and the player is on foot and seen.
+      // Shoot when close and the player is on foot and seen — and only with
+      // a clear line of sight (no shooting through buildings).
       cop.shootCd -= dt;
-      if (seen && !driving && dPlayer < 300 && dPlayer > 30 && cop.shootCd <= 0) {
+      if (seen && !driving && dPlayer < 300 && dPlayer > 30 && cop.shootCd <= 0 &&
+          hasLineOfSight(game, cop.x, cop.y, px, py)) {
         cop.shootCd = 0.9 + Math.random() * 0.6;
         shoot(game, cop.x, cop.y, Math.atan2(py - cop.y, px - cop.x) + (Math.random() - 0.5) * 0.22,
           { fromPlayer: false, damage: 30, shooter: cop });

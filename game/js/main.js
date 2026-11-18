@@ -5,7 +5,7 @@ import { clamp, dist } from './util.js';
 import { buildCity, WORLD, zoneAt, collideCircle, nearestRoadPoint } from './city.js';
 import { createCar, driveCar, collideCars, updateTraffic, spawnTrafficCar, spawnParkedCar } from './vehicles.js';
 import { createPed, updatePeds, scarePeds } from './people.js';
-import { shoot, updateEnemies, hurtPlayer } from './combat.js';
+import { shoot, updateEnemies, hurtPlayer, hasLineOfSight } from './combat.js';
 import { createPolice } from './police.js';
 import { createMissions } from './missions.js';
 import { createHud } from './hud.js';
@@ -103,6 +103,7 @@ function resetGame(seed) {
   game.stats = { earned: 0, missionsDone: 0, kingsDown: 0, completedMissions: [] };
   game.objective = null;
   game.shotHeatCd = 0;
+  game.missions.reset(); // clear stashes / unlock / pier bonus for a fresh run
   fx.particles = []; fx.tracers = []; fx.floaters = []; fx.skids = []; fx.shake = 0;
 
   const hideout = game.city.landmarkById.hideout;
@@ -139,8 +140,9 @@ function resetGame(seed) {
 function startNewGame() {
   const seed = urlSeed !== null && !Number.isNaN(urlSeed) ? urlSeed : Math.floor(Math.random() * 100000);
   resetGame(seed);
+  game.cash = 200; // Dice starts with $200 in his pocket
   enterPlaying();
-  game.missions.start('free-roam');
+  game.missions.start('first-wheels');
   game.hud.banner('SOLMAR BAY', "Danny 'Dice' Marlow is back in town", '#f1c40f');
 }
 
@@ -451,6 +453,7 @@ window.__solmar = {
   },
   giveCash(n) { game.cash += n; },
   zone() { return zoneAt(game.player.x, game.player.y); },
+  los(x1, y1, x2, y2) { return hasLineOfSight(game, x1, y1, x2, y2); },
 };
 
 // --- Boot ---------------------------------------------------------------------------

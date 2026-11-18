@@ -1,5 +1,6 @@
 // render.js — canvas world renderer.
 import { WORLD, V_ROADS, H_ROADS, ROAD_W, SAND_X, SEA_X, PIER } from './city.js';
+import { STASHES } from './missions.js';
 import { drawCar } from './vehicles.js';
 import { drawPed } from './people.js';
 import { drawEnemy } from './combat.js';
@@ -124,6 +125,23 @@ export function drawWorld(game, ctx, cam, vw, vh) {
   ctx.textAlign = 'center';
   for (const z of ZONE_LABELS) {
     if (visible(z.x, z.y, 200)) ctx.fillText(z.text, z.x, z.y);
+  }
+
+  // Hidden cash stashes: a faint green glint in the world until collected.
+  for (let i = 0; i < STASHES.length; i++) {
+    if (game.missions.isStashTaken(i)) continue;
+    const s = STASHES[i];
+    if (!visible(s.x, s.y, 40)) continue;
+    const pulse = 0.35 + Math.sin(game.time * 3 + i * 2) * 0.2;
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(Math.PI / 4);
+    ctx.fillStyle = `rgba(46,204,113,${pulse})`;
+    ctx.fillRect(-7, -7, 14, 14);
+    ctx.strokeStyle = `rgba(46,204,113,${Math.min(0.9, pulse + 0.3)})`;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(-7, -7, 14, 14);
+    ctx.restore();
   }
 
   // Mission beacon.

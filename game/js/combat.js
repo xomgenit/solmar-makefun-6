@@ -1,7 +1,13 @@
 // combat.js — hitscan shooting + generic enemies (cops and Harbor Kings).
-import { dist, clamp, pointInRect } from './util.js';
+import { dist, clamp, pointInRect, segmentHitsRects } from './util.js';
 import { knockDownPed } from './people.js';
 import { damageCar } from './vehicles.js';
+
+// True when no building stands between the two points. Enemy shots must
+// pass this gate — nobody shoots through walls.
+export function hasLineOfSight(game, x1, y1, x2, y2) {
+  return !segmentHitsRects(x1, y1, x2, y2, game.city.buildings);
+}
 
 export function spawnEnemy(game, x, y, type) {
   const e = {
@@ -125,9 +131,15 @@ export function updateEnemies(game, dt) {
     const d = dist(e.x, e.y, pl.x, pl.y);
     if (d < 380 && game.state === 'playing') {
       e.angle = Math.atan2(pl.y - e.y, pl.x - e.x);
-      if (e.shootCd <= 0) {
+      // Kings only fire with a clear line of sight, and they are poor shots:
+      // ~20% of shots are aimed, the rest go wide. Damage 30 lands as ~8 HP
+      // on the player (shoot() scales enemy damage x0.25), so the 4-king
+      // pier fight is winnable with margin.
+      if (e.shootCd <= 0 && hasLineOfSight(game, e.x, e.y, pl.x, pl.y)) {
         e.shootCd = 0.9 + Math.random() * 0.7;
-        shoot(game, e.x, e.y, e.angle + (Math.random() - 0.5) * 0.18,
+        const accurate = Math.random() < 0.20;
+        const spread = accurate ? 0.10 : 0.55;
+        shoot(game, e.x, e.y, e.angle + (Math.random() - 0.5) * spread,
           { fromPlayer: false, damage: 30, shooter: e });
       }
     }
