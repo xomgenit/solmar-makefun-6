@@ -379,6 +379,12 @@ function loop(now) {
       audioMod.updateSiren(game.sirenActive);
       game.hud.update(game, dt);
     }
+  } else if (game.state === 'paused') {
+    // Esc resumes (B3 fix: Escape only paused, never resumed).
+    if (game.input.wasPressed('Escape')) {
+      hide('pause-menu');
+      game.state = 'playing';
+    }
   }
 
   ctx.clearRect(0, 0, vw, vh);
